@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // A mutató a 12 órás pozícióban van (a kerék teteje).
         // A canvas rajzolása a 3 órás pozícióból indul, az óramutató járásával megegyezően.
         // A mutató pozíciója a canvas koordináta-rendszerében 270 fok.
-        const pointerAngle = 270;
+        const pointerAngle = 360;
         
         // A nyertes szegmens szögét a mutató és a kerék végső pozíciójának különbsége adja meg.
         const winningAngle = (pointerAngle - finalAngle + 360) % 360;
