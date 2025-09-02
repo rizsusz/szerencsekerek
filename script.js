@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputList = document.getElementById('inputList');
     
     let options = [];
+    // Színek palettája a kerék cikkelyeihez
     const colors = ['#f1c40f', '#e67e22', '#e74c3c', '#9b59b6', '#3498db', '#1abc9c', '#2ecc71', '#f39c12'];
  
     // Fő rajzoló funkció
@@ -47,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
  
-    // Pörgető funkció
-        function spinWheel() {
+    // Pörgető funkció - ÚJ, MEGBÍZHATÓ LOGIKÁVAL
+    function spinWheel() {
         options = Array.from(document.querySelectorAll('.option-input'))
             .map(input => input.value.trim())
             .filter(value => value !== '');
@@ -58,38 +59,31 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
  
-        const arcSize = 360 / options.length;
-        const totalRotation = Math.floor(Math.random() * 5) * 360 + Math.floor(Math.random() * 360);
-        const finalAngle = totalRotation % 360;
- 
-        // A mutató a 12 órás pozícióban van (a kerék teteje).
-        // A canvas rajzolása a 3 órás pozícióból indul, az óramutató járásával megegyezően.
-        // A mutató pozíciója a canvas koordináta-rendszerében 270 fok.
-        const pointerAngle = 270;
+        // 1. Válasszunk ki egy véletlenszerű nyertest a pörgetés előtt
+        const winningOptionIndex = Math.floor(Math.random() * options.length);
+        const winningOption = options[winningOptionIndex];
         
-        // A nyertes szegmens szögét a mutató és a kerék végső pozíciójának különbsége adja meg.
-        const winningAngle = ( finalAngle - pointerAngle ) % 360;
- 
-        // Kiszámítjuk a nyertes indexét a szög alapján.
-        let winningIndex = Math.floor(winningAngle / arcSize);
+        // 2. Számítsuk ki a szükséges forgást
+        const arcSizeInDegrees = 360 / options.length;
+        const middleOfSegment = (winningOptionIndex * arcSizeInDegrees) + (arcSizeInDegrees / 2);
         
-        // A logika miatt előfordulhat, hogy a 0. index helyett az utolsót adja vissza.
-        // Ezt korrigáljuk.
-        if (winningAngle < 0.01 && winningIndex === 0) {
-            winningIndex = options.length - 1;
-        }
- 
+        // 3. A mutató a 12 órás pozíción van, ami 270 fok a rajzolási rendszernél
+        // Tehát 270 fokkal el kell tolni a forgást, hogy a mutatóhoz igazodjon
+        const spinToAngle = 270 - middleOfSegment;
+        
+        // 4. Adjunk hozzá extra fordulatokat, hogy a pörgetés látványos legyen
+        const extraSpins = Math.floor(Math.random() * 5) + 5;
+        const totalRotation = spinToAngle + (extraSpins * 360);
+        
         spinBtn.disabled = true;
+ 
         canvas.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';
         canvas.style.transform = `rotate(${totalRotation}deg)`;
  
         setTimeout(() => {
-            alert(`A nyertes: ${options[winningIndex]}`);
+            alert(`A nyertes: ${winningOption}`);
             spinBtn.disabled = false;
-            canvas.style.transition = 'none';
-            canvas.style.transform = `rotate(${finalAngle}deg)`;
         }, 5000);
-    
     }
     
     // Új opció beviteli mező hozzáadása
