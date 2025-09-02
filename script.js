@@ -58,26 +58,28 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
  
-        const spins = Math.floor(Math.random() * 5) + 5;
-        const totalRotation = spins * 360 + (Math.random() * 360);
-        const arcSize = 360 / options.length;
+   const spins = Math.floor(Math.random() * 5) + 5;
+    const totalRotation = spins * 360 + (Math.random() * 360);
+    const arcSize = 360 / options.length;
  
-        // Eltalált szegmens kiszámítása
-        const winningAngle = 360 - (totalRotation % 360);
-        const winningIndex = Math.floor(winningAngle / arcSize);
-        
-        spinBtn.disabled = true;
+    // --- A nyertes szegmens pontos kiszámítása ---
+    // A mutató (a kerék teteje) 90 fokos eltolódással van a rajzolási kezdőponthoz képest.
+    // Ez a javított logika biztosítja, hogy a mutató alá kerülő szegmens legyen a nyertes.
+    const finalAngle = totalRotation % 360;
+    const winningIndex = Math.floor((360 + 270 - finalAngle) % 360 / arcSize);
+    // --- Változás vége ---
  
-        canvas.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';
-        canvas.style.transform = `rotate(${totalRotation}deg)`;
+    spinBtn.disabled = true;
+    canvas.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    canvas.style.transform = `rotate(${totalRotation}deg)`;
  
-        setTimeout(() => {
-            alert(`A nyertes: ${options[winningIndex]}`);
-            spinBtn.disabled = false;
-            // A kerék visszaállítása, hogy ne torzuljon az ismételt pörgetésnél
-            canvas.style.transition = 'none';
-            canvas.style.transform = `rotate(${totalRotation % 360}deg)`;
-        }, 5000);
+    setTimeout(() => {
+        alert(`A nyertes: ${options[winningIndex]}`);
+        spinBtn.disabled = false;
+        // A kerék visszaállítása, hogy ne torzuljon az ismételt pörgetésnél
+        canvas.style.transition = 'none';
+        canvas.style.transform = `rotate(${finalAngle}deg)`;
+    }, 5000);
     }
     
     // Új opció beviteli mező hozzáadása
