@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szerencsekerék</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <h1>Szerencsekerék</h1>
+        <div class="wheel-container">
+            <canvas id="wheelCanvas" width="500" height="500"></canvas>
+            <div class="marker"></div>
+        </div>
+ 
+        <div class="options-container">
+            <h2>Adj meg opciókat:</h2>
+            <div id="inputList">
+                <div class="input-group">
+                    <input type="text" class="option-input" placeholder="Opció 1">
+                </div>
+                <div class="input-group">
+                    <input type="text" class="option-input" placeholder="Opció 2">
+                </div>
+            </div>
+            <button id="addOptionBtn" class="action-btn add-btn">Új opció hozzáadása</button>
+            <button id="spinBtn" class="action-btn spin-btn">Pörgetés!</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
