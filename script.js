@@ -4,9 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const spinBtn = document.getElementById('spinBtn');
     const addOptionBtn = document.getElementById('addOptionBtn');
     const inputList = document.getElementById('inputList');
+    const winnerDisplay = document.getElementById('winnerDisplay');
+    const fireworksContainer = document.getElementById('fireworks-container');
     
     let options = [];
-    // Színek palettája a kerék cikkelyeihez
     const colors = ['#f1c40f', '#e67e22', '#e74c3c', '#9b59b6', '#3498db', '#1abc9c', '#2ecc71', '#f39c12'];
  
     // Fő rajzoló funkció
@@ -48,9 +49,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
  
-    // Pörgető funkció - ÚJ, MEGBÍZHATÓ LOGIKÁVAL
-      function spinWheel() {
-        // Készítünk egy pillanatfelvételt az opciókról a pörgetés előtt
+    // Tűzijáték indítása
+    function createFireworks() {
+        const fireworkCount = 50;
+        for (let i = 0; i < fireworkCount; i++) {
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+            firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            firework.style.left = `${Math.random() * 100}%`;
+            firework.style.top = `${Math.random() * 100}%`;
+            fireworksContainer.appendChild(firework);
+ 
+            // Törlés az animáció vége után
+            setTimeout(() => {
+                firework.remove();
+            }, 800);
+        }
+    }
+ 
+    // Pörgető funkció
+    function spinWheel() {
         const currentOptions = Array.from(document.querySelectorAll('.option-input'))
             .map(input => input.value.trim())
             .filter(value => value !== '');
@@ -60,19 +78,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
  
-        // 1. Válasszunk ki egy véletlenszerű nyertest a pörgetés előtt
+        // Töröljük az előző eredményt és animációt
+        winnerDisplay.classList.remove('visible');
+        winnerDisplay.textContent = '';
+        fireworksContainer.innerHTML = '';
+        
         const winningOptionIndex = Math.floor(Math.random() * currentOptions.length);
         const winningOption = currentOptions[winningOptionIndex];
         
-        // 2. Számítsuk ki a szükséges forgást
         const arcSizeInDegrees = 360 / currentOptions.length;
         const middleOfSegment = (winningOptionIndex * arcSizeInDegrees) + (arcSizeInDegrees / 2);
         
-        // 3. A mutató a 12 órás pozíción van, ami 270 fok a rajzolási rendszernél
-        // Tehát 270 fokkal el kell tolni a forgást, hogy a mutatóhoz igazodjon
         const spinToAngle = 270 - middleOfSegment;
         
-        // 4. Adjunk hozzá extra fordulatokat, hogy a pörgetés látványos legyen
         const extraSpins = Math.floor(Math.random() * 5) + 5;
         const totalRotation = spinToAngle + (extraSpins * 360);
         
@@ -82,7 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.style.transform = `rotate(${totalRotation}deg)`;
  
         setTimeout(() => {
-            alert(`A nyertes: ${winningOption}`);
+            winnerDisplay.textContent = `A nyertes: ${winningOption}!`;
+            winnerDisplay.classList.add('visible');
+            createFireworks();
             spinBtn.disabled = false;
         }, 5000);
     }
