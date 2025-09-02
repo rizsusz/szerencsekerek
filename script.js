@@ -58,15 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
  
-   const spins = Math.floor(Math.random() * 5) + 5;
+    const spins = Math.floor(Math.random() * 5) + 5;
     const totalRotation = spins * 360 + (Math.random() * 360);
     const arcSize = 360 / options.length;
  
-    // --- A nyertes szegmens pontos kiszámítása ---
-    // A mutató (a kerék teteje) 90 fokos eltolódással van a rajzolási kezdőponthoz képest.
-    // Ez a javított logika biztosítja, hogy a mutató alá kerülő szegmens legyen a nyertes.
+    // --- A nyertes szegmens pontos kiszámítása (Javított) ---
     const finalAngle = totalRotation % 360;
-    const winningIndex = Math.floor((360 + 270 - finalAngle) % 360 / arcSize);
+    
+    // A nyertes index a mutató (3 óra irány) és a kerék végső pozíciója alapján
+    // kerül kiszámításra, egy kis extra eltolással a pontosság érdekében.
+    const winningIndex = Math.floor((360 - finalAngle + 90 + (arcSize / 2)) % 360 / arcSize);
     // --- Változás vége ---
  
     spinBtn.disabled = true;
@@ -76,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         alert(`A nyertes: ${options[winningIndex]}`);
         spinBtn.disabled = false;
-        // A kerék visszaállítása, hogy ne torzuljon az ismételt pörgetésnél
         canvas.style.transition = 'none';
         canvas.style.transform = `rotate(${finalAngle}deg)`;
     }, 5000);
