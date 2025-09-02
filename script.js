@@ -48,38 +48,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
  
     // Pörgető funkció
-    function spinWheel() {
+        function spinWheel() {
         options = Array.from(document.querySelectorAll('.option-input'))
-                       .map(input => input.value.trim())
-                       .filter(value => value !== '');
+            .map(input => input.value.trim())
+            .filter(value => value !== '');
  
         if (options.length < 2) {
             alert("Kérlek adj meg legalább 2 opciót!");
             return;
         }
  
-    const spins = Math.floor(Math.random() * 5) + 5;
-    const totalRotation = spins * 360 + (Math.random() * 360);
-    const arcSize = 360 / options.length;
+        const arcSize = 360 / options.length;
+        const totalRotation = Math.floor(Math.random() * 5) * 360 + Math.floor(Math.random() * 360);
+        const finalAngle = totalRotation % 360;
  
-    // --- A nyertes szegmens pontos kiszámítása (Javított) ---
-    const finalAngle = totalRotation % 360;
+        // A mutató a 12 órás pozícióban van (a kerék teteje).
+        // A canvas rajzolása a 3 órás pozícióból indul, az óramutató járásával megegyezően.
+        // A mutató pozíciója a canvas koordináta-rendszerében 270 fok.
+        const pointerAngle = 270;
+        
+        // A nyertes szegmens szögét a mutató és a kerék végső pozíciójának különbsége adja meg.
+        const winningAngle = (pointerAngle - finalAngle + 360) % 360;
+ 
+        // Kiszámítjuk a nyertes indexét a szög alapján.
+        let winningIndex = Math.floor(winningAngle / arcSize);
+        
+        // A logika miatt előfordulhat, hogy a 0. index helyett az utolsót adja vissza.
+        // Ezt korrigáljuk.
+        if (winningAngle < 0.01 && winningIndex === 0) {
+            winningIndex = options.length - 1;
+        }
+ 
+        spinBtn.disabled = true;
+        canvas.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+        canvas.style.transform = `rotate(${totalRotation}deg)`;
+ 
+        setTimeout(() => {
+            alert(`A nyertes: ${options[winningIndex]}`);
+            spinBtn.disabled = false;
+            canvas.style.transition = 'none';
+            canvas.style.transform = `rotate(${finalAngle}deg)`;
+        }, 5000);
     
-    // A nyertes index a mutató (3 óra irány) és a kerék végső pozíciója alapján
-    // kerül kiszámításra, egy kis extra eltolással a pontosság érdekében.
-    const winningIndex = Math.floor((360 - finalAngle -90 + (arcSize / 2)) % 360 / arcSize);
-    // --- Változás vége ---
- 
-    spinBtn.disabled = true;
-    canvas.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    canvas.style.transform = `rotate(${totalRotation}deg)`;
- 
-    setTimeout(() => {
-        alert(`A nyertes: ${options[winningIndex]}`);
-        spinBtn.disabled = false;
-        canvas.style.transition = 'none';
-        canvas.style.transform = `rotate(${finalAngle}deg)`;
-    }, 5000);
     }
     
     // Új opció beviteli mező hozzáadása
