@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // A nyertes index a mutató (3 óra irány) és a kerék végső pozíciója alapján
     // kerül kiszámításra, egy kis extra eltolással a pontosság érdekében.
-    const winningIndex = Math.floor((360 - finalAngle + (arcSize / 2)) % 360 / arcSize);
+    const winningIndex = Math.floor((360 - finalAngle -90 + (arcSize / 2)) % 360 / arcSize);
     // --- Változás vége ---
  
     spinBtn.disabled = true;
