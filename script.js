@@ -49,22 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
  
     // Pörgető funkció - ÚJ, MEGBÍZHATÓ LOGIKÁVAL
-    function spinWheel() {
-        options = Array.from(document.querySelectorAll('.option-input'))
+      function spinWheel() {
+        // Készítünk egy pillanatfelvételt az opciókról a pörgetés előtt
+        const currentOptions = Array.from(document.querySelectorAll('.option-input'))
             .map(input => input.value.trim())
             .filter(value => value !== '');
  
-        if (options.length < 2) {
+        if (currentOptions.length < 2) {
             alert("Kérlek adj meg legalább 2 opciót!");
             return;
         }
  
         // 1. Válasszunk ki egy véletlenszerű nyertest a pörgetés előtt
-        const winningOptionIndex = Math.floor(Math.random() * options.length);
-        const winningOption = options[winningOptionIndex];
+        const winningOptionIndex = Math.floor(Math.random() * currentOptions.length);
+        const winningOption = currentOptions[winningOptionIndex];
         
         // 2. Számítsuk ki a szükséges forgást
-        const arcSizeInDegrees = 360 / options.length;
+        const arcSizeInDegrees = 360 / currentOptions.length;
         const middleOfSegment = (winningOptionIndex * arcSizeInDegrees) + (arcSizeInDegrees / 2);
         
         // 3. A mutató a 12 órás pozíción van, ami 270 fok a rajzolási rendszernél
